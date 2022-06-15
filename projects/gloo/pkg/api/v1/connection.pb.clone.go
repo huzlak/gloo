@@ -69,6 +69,12 @@ func (m *ConnectionConfig) Clone() proto.Message {
 		target.Http1ProtocolOptions = proto.Clone(m.GetHttp1ProtocolOptions()).(*ConnectionConfig_Http1ProtocolOptions)
 	}
 
+	if h, ok := interface{}(m.GetHttp2ProtocolOptions()).(clone.Cloner); ok {
+		target.Http2ProtocolOptions = h.Clone().(*ConnectionConfig_Http2ProtocolOptions)
+	} else {
+		target.Http2ProtocolOptions = proto.Clone(m.GetHttp2ProtocolOptions()).(*ConnectionConfig_Http2ProtocolOptions)
+	}
+
 	return target
 }
 
@@ -149,6 +155,25 @@ func (m *ConnectionConfig_Http1ProtocolOptions) Clone() proto.Message {
 		}
 
 	}
+
+	return target
+}
+
+// Clone function
+func (m *ConnectionConfig_Http2ProtocolOptions) Clone() proto.Message {
+	var target *ConnectionConfig_Http2ProtocolOptions
+	if m == nil {
+		return target
+	}
+	target = &ConnectionConfig_Http2ProtocolOptions{}
+
+	target.MaxConcurrentStreams = m.GetMaxConcurrentStreams()
+
+	target.InitialStreamWindowSize = m.GetInitialStreamWindowSize()
+
+	target.InitialConnectionWindowSize = m.GetInitialConnectionWindowSize()
+
+	target.OverrideStreamErrorOnInvalidHttpMessage = m.GetOverrideStreamErrorOnInvalidHttpMessage()
 
 	return target
 }

@@ -73,7 +73,14 @@ func (p *plugin) ProcessUpstream(params plugins.Params, in *v1.Upstream, out *en
 		out.CommonHttpProtocolOptions = commonHttpProtocolOptions
 	}
 
-	if cfg.GetHttp1ProtocolOptions() != nil {
+	if cfg.GetHttp2ProtocolOptions() != nil {
+		http2ProtocolOptions, err := convertHttp2ProtocolOptions(cfg.GetHttp2ProtocolOptions())
+		if err != nil {
+			return err
+		}
+		out.Http2ProtocolOptions = http2ProtocolOptions
+	} else if cfg.GetHttp1ProtocolOptions() != nil {
+		// TODO: is this else right?
 		http1ProtocolOptions, err := convertHttp1ProtocolOptions(cfg.GetHttp1ProtocolOptions())
 		if err != nil {
 			return err
@@ -150,6 +157,17 @@ func convertHttp1ProtocolOptions(hpo *v1.ConnectionConfig_Http1ProtocolOptions) 
 				},
 			},
 		}
+	}
+
+	return out, nil
+}
+
+func convertHttp2ProtocolOptions(hpo *v1.ConnectionConfig_Http2ProtocolOptions) (*envoy_config_core_v3.Http2ProtocolOptions, error) {
+	out := &envoy_config_core_v3.Http2ProtocolOptions{
+		MaxConcurrentStreams:                    &wrappers.UInt32Value{Value: hpo.GetMaxConcurrentStreams()},
+		InitialStreamWindowSize:                 &wrappers.UInt32Value{Value: hpo.GetInitialStreamWindowSize()},
+		InitialConnectionWindowSize:             &wrappers.UInt32Value{Value: hpo.GetInitialConnectionWindowSize()},
+		OverrideStreamErrorOnInvalidHttpMessage: &wrappers.BoolValue{Value: hpo.GetOverrideStreamErrorOnInvalidHttpMessage()},
 	}
 
 	return out, nil

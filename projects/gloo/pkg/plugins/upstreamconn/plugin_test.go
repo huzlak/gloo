@@ -165,6 +165,29 @@ var _ = Describe("Plugin", func() {
 		Expect(out.GetHttpProtocolOptions().GetHeaderKeyFormat().GetStatefulFormatter()).To(BeNil())  // ...which makes preserve_case_words nil
 	})
 
+	It("Should set Http2ProtocolOptions", func() {
+		upstream.ConnectionConfig = &v1.ConnectionConfig{
+			Http2ProtocolOptions: &v1.ConnectionConfig_Http2ProtocolOptions{
+				MaxConcurrentStreams:                    123,
+				InitialStreamWindowSize:                 456,
+				InitialConnectionWindowSize:             789,
+				OverrideStreamErrorOnInvalidHttpMessage: true,
+			},
+		}
+
+		err := plugin.ProcessUpstream(params, upstream, out)
+		Expect(err).NotTo(HaveOccurred())
+		outHpo := out.GetHttp2ProtocolOptions()
+		expectedValue := envoy_config_core_v3.Http2ProtocolOptions{
+			MaxConcurrentStreams:                    &wrappers.UInt32Value{Value: 123},
+			InitialStreamWindowSize:                 &wrappers.UInt32Value{Value: 456},
+			InitialConnectionWindowSize:             &wrappers.UInt32Value{Value: 789},
+			OverrideStreamErrorOnInvalidHttpMessage: &wrappers.BoolValue{Value: true},
+		}
+
+		Expect(*outHpo).To(Equal(expectedValue))
+	})
+
 	It("should error setting CommonHttpProtocolOptions when an invalid enum value is used", func() {
 		upstream.ConnectionConfig = &v1.ConnectionConfig{
 			CommonHttpProtocolOptions: &v1.ConnectionConfig_HttpProtocolOptions{

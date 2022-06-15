@@ -152,6 +152,20 @@ spec:
                       properCaseHeaderKeyFormat:
                         type: boolean
                     type: object
+                  http2ProtocolOptions:
+                    properties:
+                      initialConnectionWindowSize:
+                        format: int32
+                        type: integer
+                      initialStreamWindowSize:
+                        format: int32
+                        type: integer
+                      maxConcurrentStreams:
+                        format: int32
+                        type: integer
+                      overrideStreamErrorOnInvalidHttpMessage:
+                        type: boolean
+                    type: object
                   maxRequestsPerConnection:
                     format: int32
                     type: integer

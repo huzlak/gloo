@@ -16,6 +16,7 @@ weight: 5
 - [HttpProtocolOptions](#httpprotocoloptions)
 - [HeadersWithUnderscoresAction](#headerswithunderscoresaction)
 - [Http1ProtocolOptions](#http1protocoloptions)
+- [Http2ProtocolOptions](#http2protocoloptions)
   
 
 
@@ -39,6 +40,7 @@ Fine tune the settings for connections to an upstream
 "perConnectionBufferLimitBytes": .google.protobuf.UInt32Value
 "commonHttpProtocolOptions": .gloo.solo.io.ConnectionConfig.HttpProtocolOptions
 "http1ProtocolOptions": .gloo.solo.io.ConnectionConfig.Http1ProtocolOptions
+"http2ProtocolOptions": .gloo.solo.io.ConnectionConfig.Http2ProtocolOptions
 
 ```
 
@@ -50,6 +52,7 @@ Fine tune the settings for connections to an upstream
 | `perConnectionBufferLimitBytes` | [.google.protobuf.UInt32Value](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/u-int-32-value) | Soft limit on size of the cluster’s connections read and write buffers. If unspecified, an implementation defined default is applied (1MiB). For more info, see the [envoy docs](https://www.envoyproxy.io/docs/envoy/v1.14.1/api-v2/api/v2/cluster.proto#cluster). |
 | `commonHttpProtocolOptions` | [.gloo.solo.io.ConnectionConfig.HttpProtocolOptions](../connection.proto.sk/#httpprotocoloptions) | Additional options when handling HTTP requests upstream. These options will be applicable to both HTTP1 and HTTP2 requests. |
 | `http1ProtocolOptions` | [.gloo.solo.io.ConnectionConfig.Http1ProtocolOptions](../connection.proto.sk/#http1protocoloptions) | Additional Options when handling HTTP requests upstream. These options will be applicable only to HTTP1 requests. |
+| `http2ProtocolOptions` | [.gloo.solo.io.ConnectionConfig.Http2ProtocolOptions](../connection.proto.sk/#http2protocoloptions) | Additional Options when handling HTTP requests upstream. These options will be applicable only to HTTP2 requests. |
 
 
 
@@ -136,6 +139,29 @@ characters.
 | `enableTrailers` | `bool` | Enables trailers for HTTP/1. By default the HTTP/1 codec drops proxied trailers. Note: Trailers must also be enabled at the gateway level in order for this option to take effect. |
 | `properCaseHeaderKeyFormat` | `bool` | Formats the REQUEST HEADER by proper casing words: the first character and any character following a special character will be capitalized if it's an alpha character. For example, "content-type" becomes "Content-Type", and "foo$b#$are" becomes "Foo$B#$Are". Note that while this results in most headers following conventional casing, certain headers are not covered. For example, the "TE" header will be formatted as "Te". Only one of `properCaseHeaderKeyFormat` or `preserveCaseHeaderKeyFormat` can be set. |
 | `preserveCaseHeaderKeyFormat` | `bool` | Generates configuration for a stateful formatter extension that allows using received headers to affect the output of encoding headers. Specifically: preserving REQUEST HEADER case during proxying. Only one of `preserveCaseHeaderKeyFormat` or `properCaseHeaderKeyFormat` can be set. |
+
+
+
+
+---
+### Http2ProtocolOptions
+
+
+
+```yaml
+"maxConcurrentStreams": int
+"initialStreamWindowSize": int
+"initialConnectionWindowSize": int
+"overrideStreamErrorOnInvalidHttpMessage": bool
+
+```
+
+| Field | Type | Description |
+| ----- | ---- | ----------- | 
+| `maxConcurrentStreams` | `int` | Maximum concurrent streams allowed for peer on one HTTP/2 connection. Valid values range from 1 to 2147483647 (2^31 - 1) and defaults to 2147483647. For upstream connections, this also limits how many streams Envoy will initiate concurrently on a single connection. If the limit is reached, Envoy may queue requests or establish additional connections (as allowed per circuit breaker limits). This acts as an upper bound: Envoy will lower the max concurrent streams allowed on a given connection based on upstream settings. Config dumps will reflect the configured upper bound, not the per-connection negotiated limits. |
+| `initialStreamWindowSize` | `int` | Initial stream-level flow-control window size. Valid values range from 65535 (2^16 - 1, HTTP/2 default) to 2147483647 (2^31 - 1, HTTP/2 maximum) and defaults to 268435456 (256 * 1024 * 1024). NOTE: 65535 is the initial window size from HTTP/2 spec. We only support increasing the default window size now, so it’s also the minimum. This field also acts as a soft limit on the number of bytes Envoy will buffer per-stream in the HTTP/2 codec buffers. Once the buffer reaches this pointer, watermark callbacks will fire to stop the flow of data to the codec buffers. |
+| `initialConnectionWindowSize` | `int` | Similar to initial_stream_window_size, but for connection-level flow-control window. Currently, this has the same minimum/maximum/default as initial_stream_window_size. |
+| `overrideStreamErrorOnInvalidHttpMessage` | `bool` | Allows invalid HTTP messaging and headers. When this option is disabled (default), then the whole HTTP/2 connection is terminated upon receiving invalid HEADERS frame. However, when this option is enabled, only the offending stream is terminated. This overrides any HCM stream_error_on_invalid_http_messaging See RFC7540, sec. 8.1 for details. https://datatracker.ietf.org/doc/html/rfc7540#section-8.1. |
 
 
 

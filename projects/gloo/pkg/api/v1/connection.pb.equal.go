@@ -100,6 +100,16 @@ func (m *ConnectionConfig) Equal(that interface{}) bool {
 		}
 	}
 
+	if h, ok := interface{}(m.GetHttp2ProtocolOptions()).(equality.Equalizer); ok {
+		if !h.Equal(target.GetHttp2ProtocolOptions()) {
+			return false
+		}
+	} else {
+		if !proto.Equal(m.GetHttp2ProtocolOptions(), target.GetHttp2ProtocolOptions()) {
+			return false
+		}
+	}
+
 	return true
 }
 
@@ -253,6 +263,46 @@ func (m *ConnectionConfig_Http1ProtocolOptions) Equal(that interface{}) bool {
 		if m.HeaderFormat != target.HeaderFormat {
 			return false
 		}
+	}
+
+	return true
+}
+
+// Equal function
+func (m *ConnectionConfig_Http2ProtocolOptions) Equal(that interface{}) bool {
+	if that == nil {
+		return m == nil
+	}
+
+	target, ok := that.(*ConnectionConfig_Http2ProtocolOptions)
+	if !ok {
+		that2, ok := that.(ConnectionConfig_Http2ProtocolOptions)
+		if ok {
+			target = &that2
+		} else {
+			return false
+		}
+	}
+	if target == nil {
+		return m == nil
+	} else if m == nil {
+		return false
+	}
+
+	if m.GetMaxConcurrentStreams() != target.GetMaxConcurrentStreams() {
+		return false
+	}
+
+	if m.GetInitialStreamWindowSize() != target.GetInitialStreamWindowSize() {
+		return false
+	}
+
+	if m.GetInitialConnectionWindowSize() != target.GetInitialConnectionWindowSize() {
+		return false
+	}
+
+	if m.GetOverrideStreamErrorOnInvalidHttpMessage() != target.GetOverrideStreamErrorOnInvalidHttpMessage() {
+		return false
 	}
 
 	return true

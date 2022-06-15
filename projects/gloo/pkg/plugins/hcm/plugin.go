@@ -65,7 +65,7 @@ func (p *plugin) ProcessHcmNetworkFilter(params plugins.Params, _ *v1.Listener, 
 			AcceptHttp_10:         true,
 			DefaultHostForHttp_10: in.GetDefaultHostForHttp_10(),
 		}
-	}
+	} // TODO: else here?
 
 	// if we want to set a header format with `in`, ensure `out` has a non-nil value
 	if in.GetHeaderFormat() != nil && out.GetHttpProtocolOptions() == nil {
