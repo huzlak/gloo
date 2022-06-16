@@ -53,6 +53,9 @@ message HttpConnectionManagerSettings {
     google.protobuf.Duration idle_timeout = 8;
     google.protobuf.UInt32Value max_request_headers_kb = 9;
     google.protobuf.Duration request_timeout = 10;
+    // (Duration) The amount of time that Envoy will wait for the request headers to be received. The timer is activated when the first byte of the headers is received, and is disarmed when the last byte of the headers has been received. If not specified or set to 0, this timeout is disabled.
+    // Attention- This field should be configured in the presence of untrusted downstreams.
+    google.protobuf.Duration request_headers_timeout = 11;
     google.protobuf.Duration drain_timeout = 12;
     google.protobuf.Duration delayed_close_timeout = 13;
     string server_name = 14;

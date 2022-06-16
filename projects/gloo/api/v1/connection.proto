@@ -84,6 +84,11 @@ message ConnectionConfig {
         // If this setting is not specified, the value defaults to ALLOW.
         // Note: upstream responses are not affected by this setting.
         HeadersWithUnderscoresAction headers_with_underscores_action = 4;
+
+        // (BoolValue) Allows invalid HTTP messaging and headers.
+        // When this option is disabled (default), then the whole HTTP connection is terminated upon receiving invalid HEADERS frame.
+        // However, when this option is enabled, only the offending stream is terminated.
+        bool override_stream_error_on_invalid_http_message = 25;
     }
     // Additional options when handling HTTP requests upstream. These options will be applicable to
     // both HTTP1 and HTTP2 requests.

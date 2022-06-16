@@ -200,6 +200,10 @@ func (m *ConnectionConfig_HttpProtocolOptions) Equal(that interface{}) bool {
 		return false
 	}
 
+	if m.GetOverrideStreamErrorOnInvalidHttpMessage() != target.GetOverrideStreamErrorOnInvalidHttpMessage() {
+		return false
+	}
+
 	return true
 }
 

@@ -73,11 +73,18 @@ func (p *plugin) ProcessUpstream(params plugins.Params, in *v1.Upstream, out *en
 		out.CommonHttpProtocolOptions = commonHttpProtocolOptions
 	}
 
+	overrideStreamErrorOnInvalidHttpMessage := in.GetConnectionConfig().GetCommonHttpProtocolOptions().GetOverrideStreamErrorOnInvalidHttpMessage()
+
 	if cfg.GetHttp1ProtocolOptions() != nil {
 		http1ProtocolOptions, err := convertHttp1ProtocolOptions(cfg.GetHttp1ProtocolOptions())
 		if err != nil {
 			return err
 		}
+
+		if overrideStreamErrorOnInvalidHttpMessage {
+			http1ProtocolOptions.OverrideStreamErrorOnInvalidHttpMessage = &wrappers.BoolValue{Value: overrideStreamErrorOnInvalidHttpMessage}
+		}
+
 		out.HttpProtocolOptions = http1ProtocolOptions
 	}
 

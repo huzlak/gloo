@@ -47,6 +47,7 @@ See here for more information: https://www.envoyproxy.io/docs/envoy/v1.9.0/confi
 "idleTimeout": .google.protobuf.Duration
 "maxRequestHeadersKb": .google.protobuf.UInt32Value
 "requestTimeout": .google.protobuf.Duration
+"requestHeadersTimeout": .google.protobuf.Duration
 "drainTimeout": .google.protobuf.Duration
 "delayedCloseTimeout": .google.protobuf.Duration
 "serverName": string
@@ -88,6 +89,7 @@ See here for more information: https://www.envoyproxy.io/docs/envoy/v1.9.0/confi
 | `idleTimeout` | [.google.protobuf.Duration](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/duration) |  |
 | `maxRequestHeadersKb` | [.google.protobuf.UInt32Value](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/u-int-32-value) |  |
 | `requestTimeout` | [.google.protobuf.Duration](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/duration) |  |
+| `requestHeadersTimeout` | [.google.protobuf.Duration](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/duration) | (Duration) The amount of time that Envoy will wait for the request headers to be received. The timer is activated when the first byte of the headers is received, and is disarmed when the last byte of the headers has been received. If not specified or set to 0, this timeout is disabled. Attention- This field should be configured in the presence of untrusted downstreams. |
 | `drainTimeout` | [.google.protobuf.Duration](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/duration) |  |
 | `delayedCloseTimeout` | [.google.protobuf.Duration](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/duration) |  |
 | `serverName` | `string` |  |

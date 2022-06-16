@@ -87,6 +87,7 @@ see more info here: https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/co
 "maxHeadersCount": int
 "maxStreamDuration": .google.protobuf.Duration
 "headersWithUnderscoresAction": .gloo.solo.io.ConnectionConfig.HttpProtocolOptions.HeadersWithUnderscoresAction
+"overrideStreamErrorOnInvalidHttpMessage": bool
 
 ```
 
@@ -96,6 +97,7 @@ see more info here: https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/co
 | `maxHeadersCount` | `int` | The maximum number of headers. If unconfigured, the default maximum number of request headers allowed is 100. Requests that exceed this limit will receive a 431 response for HTTP/1.x and cause a stream reset for HTTP/2. |
 | `maxStreamDuration` | [.google.protobuf.Duration](https://developers.google.com/protocol-buffers/docs/reference/csharp/class/google/protobuf/well-known-types/duration) | Total duration to keep alive an HTTP request/response stream. If the time limit is reached the stream will be reset independent of any other timeouts. If not specified, this value is not set. |
 | `headersWithUnderscoresAction` | [.gloo.solo.io.ConnectionConfig.HttpProtocolOptions.HeadersWithUnderscoresAction](../connection.proto.sk/#headerswithunderscoresaction) | Action to take when a client request with a header name containing underscore characters is received. If this setting is not specified, the value defaults to ALLOW. Note: upstream responses are not affected by this setting. |
+| `overrideStreamErrorOnInvalidHttpMessage` | `bool` | (BoolValue) Allows invalid HTTP messaging and headers. When this option is disabled (default), then the whole HTTP connection is terminated upon receiving invalid HEADERS frame. However, when this option is enabled, only the offending stream is terminated. |
 
 
 

@@ -98,9 +98,10 @@ var _ = Describe("Plugin", func() {
 		hour := prototime.DurationToProto(time.Hour)
 		upstream.ConnectionConfig = &v1.ConnectionConfig{
 			CommonHttpProtocolOptions: &v1.ConnectionConfig_HttpProtocolOptions{
-				MaxHeadersCount:              3,
-				MaxStreamDuration:            hour,
-				HeadersWithUnderscoresAction: 1,
+				MaxHeadersCount:                         3,
+				MaxStreamDuration:                       hour,
+				HeadersWithUnderscoresAction:            1,
+				OverrideStreamErrorOnInvalidHttpMessage: true,
 			},
 		}
 
@@ -121,13 +122,17 @@ var _ = Describe("Plugin", func() {
 			Http1ProtocolOptions: &v1.ConnectionConfig_Http1ProtocolOptions{
 				EnableTrailers: true,
 			},
+			CommonHttpProtocolOptions: &v1.ConnectionConfig_HttpProtocolOptions{
+				OverrideStreamErrorOnInvalidHttpMessage: true,
+			},
 		}
 
 		err := plugin.ProcessUpstream(params, upstream, out)
 		Expect(err).NotTo(HaveOccurred())
 		outHpo := out.GetHttpProtocolOptions()
 		expectedValue := envoy_config_core_v3.Http1ProtocolOptions{
-			EnableTrailers: true,
+			EnableTrailers:                          true,
+			OverrideStreamErrorOnInvalidHttpMessage: &wrappers.BoolValue{Value: true},
 		}
 
 		Expect(*outHpo).To(Equal(expectedValue))

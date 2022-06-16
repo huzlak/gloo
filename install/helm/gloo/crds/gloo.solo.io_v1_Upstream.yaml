@@ -140,6 +140,8 @@ spec:
                         type: integer
                       maxStreamDuration:
                         type: string
+                      overrideStreamErrorOnInvalidHttpMessage:
+                        type: boolean
                     type: object
                   connectTimeout:
                     type: string

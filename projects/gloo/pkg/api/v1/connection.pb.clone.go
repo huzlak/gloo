@@ -121,6 +121,8 @@ func (m *ConnectionConfig_HttpProtocolOptions) Clone() proto.Message {
 
 	target.HeadersWithUnderscoresAction = m.GetHeadersWithUnderscoresAction()
 
+	target.OverrideStreamErrorOnInvalidHttpMessage = m.GetOverrideStreamErrorOnInvalidHttpMessage()
+
 	return target
 }
 
